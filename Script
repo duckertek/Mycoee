@@ -1,0 +1,33 @@
+local function entityAdded(entity)
+   if entity:IsA("Model") and not entity:FindFirstChild("Health") then
+       esp(entity)
+   end
+   entity.ChildAdded:Connect(function(child)
+       if child:IsA("Model") and not child:FindFirstChild("Health") then
+           esp(child)
+       end
+   end)
+end
+
+local function toggleESP()
+   espEnabled = not espEnabled
+   for _, entity in ipairs(entitiesFolder:GetChildren()) do
+       if not entity:FindFirstChild("Health") then
+           entityAdded(entity)
+       end
+   end
+end
+
+userInputService.InputBegan:Connect(function(input)
+   if input.KeyCode == Enum.KeyCode.F then
+       toggleESP()
+   end
+end)
+
+for _, entity in ipairs(entitiesFolder:GetChildren()) do
+   if not entity:FindFirstChild("Health") then
+       entityAdded(entity)
+   end
+end
+
+entitiesFolder.ChildAdded:Connect(entityAdded)
